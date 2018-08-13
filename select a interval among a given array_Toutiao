@@ -1,0 +1,80 @@
+/*
+给定一个数组序列, 需要求选出一个区间, 使得该区间是所有区间中经过如下计算的值最大的一个：
+区间中的最小数 * 区间所有数的和最后程序输出经过计算后的最大值即可，不需要输出具体的区间。如给定序列  [6 2 1]则根据上述公式, 可得到所有可以选定各个区间的计算值:
+ 
+[6] = 6 * 6 = 36;
+[2] = 2 * 2 = 4;
+[1] = 1 * 1 = 1;
+[6,2] = 2 * 8 = 16;
+[2,1] = 1 * 3 = 3;
+[6, 2, 1] = 1 * 9 = 9;
+ 
+从上述计算可见选定区间 [6] ，计算值为 36， 则程序输出为 36。
+区间内的所有数字都在[0, 100]的范围内;
+
+输入描述:
+第一行输入数组序列长度n，第二行输入数组序列。
+对于 50%的数据,  1 <= n <= 10000;
+对于 100%的数据, 1 <= n <= 500000;
+
+
+输出描述:
+输出数组经过计算后的最大值。
+
+输入例子1:
+3
+6 2 1
+
+输出例子1:
+36
+
+*/
+
+// fortest.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<functional>
+using namespace std;
+int main() {
+	int n;
+	cin >> n;
+	vector<int> a;
+	for (int i = 0; i < n; i++) {
+		int tmp = 0;
+		cin >> tmp;
+		a.push_back(tmp);
+	}
+	
+	int sum = 0;
+	long product = 0;
+	long max = 0;
+	for (int i = 0; i < n; i++) {
+		sum = a[i];
+		int back = i + 1;
+
+		while ((back < n)&&( a[back] > a[i]))
+		{
+			sum += a[back];
+			back++;
+			
+		}
+		int forward = i - 1;
+		while (((forward) >= 0) && (a[forward] > a[i]))
+		{
+			sum += a[forward];
+			forward--;
+			
+		}		
+		product = sum * (a[i]);
+		if (product > max) {
+			max = product;
+		}
+	}
+
+	printf("%ld", max);
+	return 0;
+}
