@@ -60,3 +60,34 @@ int main() {
 	return 0;
 
 }
+
+
+//way 2 dynamic programming;
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int main(){
+    int k = 0;
+	cin >> k;
+	int a = 0, x = 0, b = 0, y = 0;	
+	cin >> a >> x >> b >> y;
+    vector<int> dp(k + 1);
+    dp[0] = 1;
+    vector<int> cost(x+1,a);
+    cost[0] = 0;
+    for(int i = 0; i < y; ++i)
+    {
+        cost.push_back(b);
+    }
+    for(int i = 1; i <= (x+y); ++i){
+        for(int j = k; j >= cost[i]; --j){
+            dp[j] = (dp[j] % 1000000007+ dp[j-cost[i]]%1000000007)%1000000007;
+        }
+    }
+    cout << dp[k];
+    return 0;
+    
+    
+}
