@@ -1,0 +1,62 @@
+/*
+小Q有X首长度为A的不同的歌和Y首长度为B的不同的歌，现在小Q想用这些歌组成一个总长度正好为K的歌单，每首歌最多只能在歌单中出现一次，在不考虑歌单内歌曲的先后顺序的情况下，请问有多少种组成歌单的方法。 
+输入描述:
+每个输入包含一个测试用例。
+每个测试用例的第一行包含一个整数，表示歌单的总长度K(1<=K<=1000)。
+接下来的一行包含四个正整数，分别表示歌的第一种长度A(A<=10)和数量X(X<=100)以及歌的第二种长度B(B<=10)和数量Y(Y<=100)。保证A不等于B。
+
+
+输出描述:
+输出一个整数,表示组成歌单的方法取模。因为答案可能会很大,输出对1000000007取模的结果。
+
+输入例子1:
+5
+2 3 3 3
+
+输出例子1:
+9
+*/
+
+
+// fortest.cpp : 定义控制台应用程序的入口点。
+//
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+vector<vector<long long>> get_trangle(int n) {
+	vector<vector<long long>> result;
+	for (int i = 0; i <= n; ++i) {
+		vector<long long> tmp(i + 1);
+		tmp[0] = 1;
+		tmp[i] = 1;
+		result.push_back(tmp);
+	}
+	for (int i = 2; i <= n; ++i) {
+		for (int j = 1; j < i; ++j)
+			result[i][j] = (result[i - 1][j - 1] + result[i - 1][j])% 1000000007;
+	}
+	return result;
+}
+int main() {
+	int k = 0;
+	cin >> k;
+	int a = 0, x = 0, b = 0, y = 0;
+	
+	cin >> a >> x >> b >> y;
+	int n = x > y ? x : y;
+	vector<vector<long long>> triangle = get_trangle(n);
+	int count = 0;
+	for (int i = 0; i <= x; ++i)
+		for (int j = 0; j <= y; ++j) {
+			if ((i*a + j*b) == k) {
+				long long tmp = 0;
+				tmp = ((long long)(triangle[x][i] * triangle[y][j] )) % 1000000007;
+				count = (count + tmp) % 1000000007;
+			}
+		}
+	cout << count;
+	return 0;
+
+}
