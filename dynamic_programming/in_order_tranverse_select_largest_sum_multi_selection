@@ -31,9 +31,7 @@ SAMPLE OUTPUT
 */
 // fortest.cpp : 定义控制台应用程序的入口点。
 //
-
-
-#include "stdafx.h"
+// Write your code here
 #include<iostream>
 #include<vector>
 using namespace std;
@@ -44,7 +42,11 @@ int dynamic_programming(vector<int> a, int k) {
 	dp[0] = true;
 	for (int i = 1; i < a.size(); ++i)
 		for (int j = a[i]; j <= k; ++j) {
-			dp[j] = dp[j - a[i]];
+			if (dp[j - a[i]])
+			{
+				dp[j] = true;
+			}
+			
 		}
 
 	
