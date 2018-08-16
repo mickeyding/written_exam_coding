@@ -1,0 +1,106 @@
+/*
+砝码称重
+
+【问题描述】
+
+设有1g、2g、3g、5g、10g、20g的砝码各若干枚（其总重<=1000），用他们能称出的重量的种类数。
+
+【输入文件】
+
+a1 a2 a3 a4 a5 a6
+
+（表示1g砝码有a1个，2g砝码有a2个，…，20g砝码有a6个，中间有空格）。
+
+【输出文件】
+
+Total=N
+
+（N表示用这些砝码能称出的不同重量的个数，但不包括一个砝码也不用的情况）。
+
+【输入样例】
+
+1 1 0 0 0 0
+
+【输出样例】
+
+TOTAL=3
+
+*/
+
+// fortest.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+/*
+// Sample code to perform I/O:
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+int num;
+cin >> num;										// Reading input from STDIN
+cout << "Input number is " << num << endl;		// Writing output to STDOUT
+}
+
+// Warning: Printing unwanted or ill-formatted data to output will cause the test cases to fail
+*/
+
+// Write your code here
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int dynamic_programming(vector<int> a, int k) {
+	vector<bool> dp((k + 1), false);
+
+	dp[0] = true;
+	for (int i = 1; i < a.size(); ++i)
+		for (int j = k; j >= a[i]; --j) {
+			if (dp[j - a[i]])
+			{
+				dp[j] = true;
+			}
+			
+		}
+
+	int count = 0;
+	for (int i = dp.size() - 1; i > 0; --i)
+	{
+		if ( dp[i] == true)
+		{			
+			count += 1;
+		}
+			
+	}
+	return count;
+}
+
+
+int main() {
+
+	vector<int> table{ 1,2,3,5,10,20 };
+	vector<int> a;
+
+	int total_weight = 0;
+	for (int i = 0; i < 6; ++i)
+	{
+		int tmp = 0;
+		cin >> tmp;
+		a.push_back(tmp);
+		total_weight += table[i] * tmp;
+	}
+	
+	vector<int> weight;
+	weight.push_back(0);
+	for (int i = 0; i < 6; ++i)
+		for (int j = 0; j < a[i]; ++j)
+		{
+			weight.push_back(table[i]);
+		}	
+		
+	cout <<dynamic_programming(weight, total_weight);
+	
+	system("pause");
+	return 0;
+}
