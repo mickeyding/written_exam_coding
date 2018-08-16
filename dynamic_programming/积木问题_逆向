@@ -1,0 +1,120 @@
+【问题描述】
+
+XC的儿子小XC最喜欢玩的游戏用积木垒漂亮的城堡。城堡是用一些立方体的积木垒成的，城堡的每一层是一块积木。小XC是一个比他爸爸XC还聪明的孩子，他发现垒城堡的时候，如果下面的积木比上面的积木大，那么城堡便不容易倒。所以他在垒城堡的时候总是遵循这样的规则。
+
+小XC想把自己垒的城堡送给幼儿园里漂亮的女孩子们，这样可以增加他的好感度。为了公平起见，他决定把送给每个女孩子一样高的城堡，这样可以避免女孩子们为了获得更漂亮的城堡而引起争执。可是他发现自己在垒城堡的时候并没有预先考虑到这一点。所以他现在要改造城堡。由于他没有多余的积木了，他灵机一动，想出了一个巧妙的改造方案。他决定从每一个城堡中挪去一些积木，使得最终每座城堡都一样高。为了使他的城堡更雄伟，他觉得应该使最后的城堡都尽可能的高。
+
+任务：
+
+请你帮助小XC编一个程序，根据他垒的所有城堡的信息，决定应该移去哪些积木才能获得最佳的效果。
+
+【输入文件】
+
+第一行是一个整数N(N<=100)，表示一共有几座城堡。以下N行每行是一系列非负整数，用一个空格分隔，按从下往上的顺序依次给出一座城堡中所有积木的棱长。用-1结束。一座城堡中的积木不超过100块，每块积木的棱长不超过100。
+
+【输出文件】
+
+一个整数，表示最后城堡的最大可能的高度。如果找不到合适的方案，则输出0。
+
+【输入样例】
+
+2
+
+2 1 –1
+
+3 2 1 -1
+
+【输出样例】
+
+3
+
+【问题分析】
+其实塔好积木在拿走就相当于当初搭的时候没选拿走的积木。这样一转化思维问题就清楚了。把积木可搭建的最大高度看做背包的载重，每块积木的高度就是物品的重量。
+也就是用给定的物品装指定的包，使每个包装的物品一样多，且在符合条件的前提下尽量多。
+
+// fortest.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+
+
+// Write your code here
+#include<iostream>
+#include<vector>
+#include <algorithm>
+using namespace std;
+
+vector<bool> dynamic_programming(vector<int> a, int k) {
+	vector<bool> dp((k + 1), false);
+
+	dp[0] = true;
+	for (int i = 1; i < a.size(); ++i)
+		for (int j = k; j >= a[i]; --j) {
+			if (dp[j - a[i]])
+			{
+				dp[j] = true;
+			}
+			
+		}
+	return dp;
+}
+
+
+int main() {
+
+	vector<int> table{ 1,2,3,5,10,20 };	
+	int n = 0;
+	cin >> n;
+	int total_weight = 0;
+	vector<vector<bool>> result;
+	for (int i = 0; i < n; ++i)
+	{
+		vector<int> a;
+		a.push_back(0);
+		total_weight = 0;
+		int tmp = 0;
+		cin >> tmp;
+		while (tmp != -1)
+		{			
+			total_weight += tmp;
+			a.push_back(tmp);
+			cin >> tmp;
+		} 
+		
+		result.push_back(dynamic_programming(a, total_weight));
+		
+	}
+  
+  // find the max element existing in every array 
+	int max_size = result[0].size();
+	for (int i = 1; i < result.size(); ++i)
+	{
+		max_size = max(max_size, (int)result[i].size());
+	}
+			
+	for (int i = max_size - 1; i >= 0; --i)
+	{
+		bool flag = true;
+		bool flag_size = true;
+		for (int j = 0; j < result.size(); ++j)
+		{
+			if (i >= result[j].size())
+			{
+				flag_size = false;
+				break;
+			}
+			if (result[j][i] == false)
+			{
+				flag = false;
+			}
+		}
+		if (flag && flag_size)
+		{
+			cout << i;
+			break;
+		}
+	}
+	
+	
+	system("pause");
+	return 0;
+}
