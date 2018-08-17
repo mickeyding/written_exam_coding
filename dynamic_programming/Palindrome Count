@@ -1,0 +1,79 @@
+/*Given a string S, count the number of non empty sub strings that are palindromes.
+A sub string is any continuous sequence of characters in the string.
+A string is said to be palindrome, if the reverse of the string is same as itself.
+Two sub strings are different if they occur at different positions in S
+
+Input
+Input contains only a single line that contains string S.
+
+Output
+Print a single number, the number of sub strings that are palindromes.
+
+Constraints
+1 <= |S| <= 50
+S contains only lower case latin letters, that is characters a to z.
+
+SAMPLE INPUT 
+dskjkd
+SAMPLE OUTPUT 
+7
+
+*/
+
+// fortest.cpp : 定义控制台应用程序的入口点。
+//
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+int dynamic_progamming(string s) {
+	int len = s.size();
+	vector<vector<bool>> Is_palin(len, vector<bool>(len, false));
+	for (int i = 0; i < len; ++i) {
+		Is_palin[i][i] = true;
+	}
+
+	for (int i = 0; i < len; ++i) {
+		for (int j = 0; j < len; ++j) {
+			if (((i + 1) < len) && ((j - 1) >= 0) && (s[i] == s[j]))
+			{
+				if (j == (i + 1)) 
+				{
+					Is_palin[i][j] = true;
+				}
+				else if ((i + 1) <= (j - 1))
+				{
+					if (Is_palin[i + 1][j - 1])
+					{
+						Is_palin[i][j] = true;
+					}
+				}
+
+				
+				
+			}
+
+		}
+	}
+	int count = 0;
+
+	for (int i = 0; i < len; ++i) {
+		for (int j = 0; j < len; ++j) {
+
+			if (Is_palin[i][j])
+				count += 1;
+		}
+
+	}
+	return count;
+
+}
+
+int main() {
+	string s;
+	cin >> s;
+	cout << dynamic_progamming(s);
+	return 0;
+}
