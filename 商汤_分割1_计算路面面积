@@ -1,0 +1,100 @@
+
+/*
+商汤研究员第一批笔试
+研究地球空间科学的永强想研究海岸线的长度和海岸线面积之间的关系，为此他找来了很多航拍图像。在航拍图像上利用图像分割的方法，把图像的每个像素标记成陆地（1）和水面（0）。
+示例图片：
+
+
+现在永强想知道每张图中陆地部分的面积。
+
+已知每张图最底部的一条边都是陆地，并且在一张图上陆地都是四邻域联通的。
+但是永强发现分割的结果有很多的噪声，于是他定义了如下规则试图去除噪声：
+a)    如果一个水面区域被陆地包围，则将这个区域记为陆地；
+b)    在a的基础上如果一个陆地区域不和底边的陆地相连，那么这是一个岛屿，不计入陆地的面积。
+
+
+输入描述:
+第一行为两个整数m和n，
+接下来m行每行会有n个数，0表示水面，1表示陆地。
+
+
+输出描述:
+去噪后陆地部分的面积。
+
+输入例子1:
+5 6
+1 0 0 1 0 0
+0 0 1 0 1 0
+1 1 1 1 1 0
+1 0 0 1 1 1
+1 1 1 1 1 1
+
+输出例子1:
+21
+*/
+
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+ int m = 0, n = 0 ;
+void link(int i, int j, vector<vector<int> > &sea_map, int flag){
+    if ( (i < 0)||(i >= m)|| (j < 0)||(j >= n) ) return;
+    if(sea_map[i][j] == flag) 
+    {
+        if(flag == 0) sea_map[i][j] = -1;
+        if(flag == 1) sea_map[i][j] = 2;
+         link(i, j -1, sea_map, flag);
+         link(i, j + 1, sea_map, flag);
+         link(i-1, j, sea_map, flag);
+         link(i+1, j, sea_map, flag);
+    }   
+}
+int main(){
+   
+    cin >> m >> n;
+    vector<vector<int> > sea_map(m);
+    for(int i = 0; i < m; ++i)
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            int tmp = 0;
+            cin >> tmp;
+            sea_map[i].push_back(tmp);            
+        }        
+    }
+     for(int i = 0; i < n; ++i)
+    {
+       if( sea_map[0][i] == 0) link(0, i, sea_map, 0);
+    }
+     for(int i = 0; i < m; ++i)
+    {
+       if( sea_map[i][0] == 0) link(i,0, sea_map, 0);
+       if( sea_map[i][n-1] == 0) link(i, n-1, sea_map, 0);
+    }
+     for(int i = 0; i < m; ++i)
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            if( sea_map[i][j] == 0)
+                sea_map[i][j] = 1;
+        }
+    }
+    for(int i = 0; i < n; ++i){
+        if( sea_map[m-1][i] == 1) link(m -1, i, sea_map , 1);
+    }
+    
+   
+    int area = 0;
+    for(int i = 0; i < m; ++i)
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            if( sea_map[i][j] == 2)
+                area += 1;
+        }
+    }
+    cout << area << endl;
+    return 0;
+}
