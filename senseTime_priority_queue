@@ -1,0 +1,106 @@
+
+/*
+给定k个有序数组, 每个数组有个N个元素，找出一个最小的闭区间，使其包含每个数组中的至少一个元素。 
+给定两个区间[a,b], [c,d]： 
+如果 b-a < d-c，则认为[a, b]是更小的区间；
+如果 b-a == d-c，且a < c，则认为[a, b]是更小的区间。
+
+输入描述:
+K
+N
+x11 x12 x13 ... x1n
+...
+xk1 xk2 xk3 ... xkn
+
+
+输出描述:
+两个数，分别为最小区间的左右边界
+
+输入例子1:
+3
+3
+2 12 14
+2 6 9
+4 7 19
+
+输出例子1:
+2 4
+
+*/
+
+
+#include<iostream>
+#include<vector>
+#include<queue>
+#include <functional>
+using namespace std;
+
+
+int main() {
+	int k = 0, n = 0;
+	cin >> k >> n;
+	vector<vector<int>> array(k);
+	priority_queue<int, vector<int>, greater<int>> sort_queue;
+	vector<int> vec(k,0);
+	for (int i = 0; i < k; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			int tmp = 0;
+			scanf_s("%d", tmp);
+			array[i].push_back(tmp);			
+			sort_queue.push(tmp);
+		}
+	}
+	vector<int> sort_array;
+	while(!sort_queue.empty())
+	{
+		int data_tmp = sort_queue.top();
+		sort_queue.pop();
+		sort_array.push_back(data_tmp);
+	}
+	int begin = 0, end = 0;
+	int start = 0, final = 0, dur = INT_MAX;
+
+	while (end < sort_array.size())
+	{
+		bool flag = true;
+		int bg_data = sort_array[begin];
+		
+		int ed_data = sort_array[end];
+		for (int j = 0; j < k; ++j)
+		{
+			while ( (vec[j] < array[j].size()) && (array[j][vec[j]] < bg_data) )
+			{
+				vec[j]++;				
+			}
+			if (vec[j] >= array[j].size())
+			{
+				goto step_out;
+			}
+			if (array[j][vec[j]] > ed_data)
+			{
+				flag = false;
+				end++;
+				break;
+			}
+			
+		}
+		if (flag)
+		{
+			if ((ed_data - bg_data) < dur)
+			{
+				dur = ed_data - bg_data;
+				start = begin;
+				final = end;
+			}
+			begin++;
+		}
+
+		
+	}
+	step_out:
+	cout << sort_array[start] << ' ' << sort_array[final]<< endl;
+	return 0;
+
+}
